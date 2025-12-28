@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="theme-color" content="#6c5ce7">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <title>Word Intensity Continuum - Order by Intensity</title>
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-9268555528006129"
+     crossorigin="anonymous"></script>
+    <!-- PWA Manifest -->
+    <link rel="manifest" id="manifest">
+    
+    <!-- Bootstrap 5 -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    
+    <!-- Google Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Roboto+Slab:wght@300;400;500&display=swap" rel="stylesheet">
+    
+    <style>
+        :root {
+            --primary-color: #6c5ce7;
+            --secondary-color: #a29bfe;
+            --accent-color: #fd79a8;
+            --dark-color: #2d3436;
+            --light-color: #f9f9f9;
+            --success-color: #00b894;
+            --warning-color: #fdcb6e;
+            --danger-color: #e17055;
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            overflow-x: hidden;
+            -webkit-tap-highlight-color: transparent;
+        }
+        
+        .app-container {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            flex: 1;
+        }
+        
+        /* Header Styles */
+        .game-header {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            padding: 1.5rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(108, 92, 231, 0.3);
+            text-align: center;
+        }
+        
+        .game-title {
+            font-family: 'Roboto Slab', serif;
+            font-weight: 700;
+            font-size: 2.8rem;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            margin-bottom: 0.5rem;
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.2);
+        }
+        
+        .game-subtitle {
+            font-size: 1.2rem;
+            opacity: 0.9;
+            margin-bottom: 0;
+        }
+        
+        /* Card Styles */
+        .game-card {
+            background: white;
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            transition: transform 0.3s ease;
+        }
+        
+        .game-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .card-title {
+            color: var(--primary-color);
+            font-weight: 600;
+            margin-bottom: 1.5rem;
+            font-size: 1.5rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        
+        .card-title i {
+            color: var(--accent-color);
+        }
+        
+        /* Word Display Styles */
+        .word-with-meaning {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            text-align: center;
+            padding: 0.5rem;
+        }
+        
+        .word-text {
+            font-size: 1.4rem;
+            font-weight: 600;
+            color: var(--dark-color);
+            margin-bottom: 0.3rem;
+        }
+        
+        .word-meaning {
+            font-size: 0.9rem;
+            color: #636e72;
+            font-style: italic;
+            line-height: 1.3;
+        }
+        
+        .exclamation {
+            color: var(--accent-color);
+            font-weight: bold;
+            margin-right: 5px;
+        }
+        
+        /* Tutorial Styles */
+        .tutorial-list {
+            list-style: none;
+            padding-left: 0;
+        }
+        
+        .tutorial-item {
+            background: var(--light-color);
+            padding: 1rem 1.5rem;
+            margin-bottom: 1rem;
+            border-radius: 15px;
+            border-left: 5px solid var(--primary-color);
+            font-size: 1.1rem;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: all 0.3s ease;
+        }
+        
+        .tutorial-item:hover {
+            transform: translateX(10px);
+            background: #f0f0f0;
+        }
+        
+        .tutorial-item i {
+            color: var(--primary-color);
+            font-size: 1.3rem;
+        }
+        
+        .intensity-label {
+            display: inline-block;
+            padding: 5px 15px;
+            border-radius: 50px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-left: auto;
+        }
+        
+        .low-intensity {
+            background-color: rgba(0, 184, 148, 0.2);
+            color: #007a63;
+        }
+        
+        .medium-intensity {
+            background-color: rgba(253, 203, 110, 0.2);
+            color: #b08c2e;
+        }
+        
+        .high-intensity {
+            background-color: rgba(225, 112, 85, 0.2);
+            color: #c4553a;
+        }
+        
+        /* Game Area Styles */
+        .word-container {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            margin-bottom: 2rem;
+            justify-content: center;
+        }
+        
+        .word-item {
+            background: white;
+            border: 3px solid var(--secondary-color);
+            padding: 1rem;
+            border-radius: 15px;
+            font-size: 1.2rem;
+            font-weight: 500;
+            cursor: grab;
+            user-select: none;
+            transition: all 0.3s ease;
+            box-shadow: 0 5px 15px rgba(162, 155, 254, 0.2);
+            min-width: 150px;
+            min-height: 100px;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        .word-item:hover {
+            background: var(--secondary-color);
+            color: white;
+            transform: translateY(-3px);
+        }
+        
+        .word-item:hover .word-meaning {
+            color: white;
+        }
+        
+        .word-item.dragging {
+            opacity: 0.7;
+            transform: scale(1.05);
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .drop-zone {
+            min-height: 150px;
+            background: rgba(108, 92, 231, 0.05);
+            border: 3px dashed var(--primary-color);
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 15px;
+            align-items: center;
+            justify-content: flex-start;
+            transition: all 0.3s ease;
+        }
+        
+        .drop-zone.active {
+            background: rgba(108, 92, 231, 0.1);
+            border-color: var(--accent-color);
+        }
+        
+        .drop-zone.empty::before {
+            content: "Drag words here in order of intensity (low to high)";
+            color: var(--primary-color);
+            font-size: 1.1rem;
+            opacity: 0.7;
+            text-align: center;
+            width: 100%;
+        }
+        
+        /* Button Styles */
+        .btn-game {
+            background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+            color: white;
+            border: none;
+            padding: 1rem 2rem;
+            border-radius: 15px;
+            font-weight: 600;
+            font-size: 1.1rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            box-shadow: 0 5px 15px rgba(108, 92, 231, 0.3);
+        }
+        
+        .btn-game:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 20px rgba(108, 92, 231, 0.4);
+            color: white;
+        }
+        
+        .btn-game:active {
+            transform: translateY(1px);
+        }
+        
+        .btn-game-secondary {
+            background: linear-gradient(135deg, #636e72, #b2bec3);
+        }
+        
+        .btn-game-success {
+            background: linear-gradient(135deg, var(--success-color), #00cec9);
+        }
+        
+        .btn-game-warning {
+            background: linear-gradient(135deg, var(--warning-color), #ffeaa7);
+            color: var(--dark-color);
+        }
+        
+        /* Feedback Styles */
+        .feedback {
+            padding: 1.5rem;
+            border-radius: 15px;
+            margin-bottom: 2rem;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        .feedback.success {
+            background-color: rgba(0, 184, 148, 0.1);
+            border-left: 5px solid var(--success-color);
+            color: #007a63;
+        }
+        
+        .feedback.error {
+            background-color: rgba(225, 112, 85, 0.1);
+            border-left: 5px solid var(--danger-color);
+            color: #c4553a;
+        }
+        
+        .feedback.hidden {
+            display: none;
+        }
+        
+        /* Score Styles */
+        .score-container {
+            background: white;
+            border-radius: 15px;
+            padding: 1.5rem;
+            text-align: center;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            margin-bottom: 2rem;
+        }
+        
+        .score-value {
+            font-size: 2.5rem;
+            font-weight: 700;
+            color: var(--primary-color);
+            margin: 0.5rem 0;
+        }
+        
+        /* Stats Styles */
+        .stats-container {
+            display: flex;
+            justify-content: space-around;
+            flex-wrap: wrap;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+        
+        .stat-item {
+            background: white;
+            border-radius: 15px;
+            padding: 1rem;
+            text-align: center;
+            min-width: 120px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+        }
+        
+        .stat-value {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary-color);
+        }
+        
+        .stat-label {
+            font-size: 0.9rem;
+            color: #636e72;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+        }
+        
+        /* Footer */
+        .game-footer {
+            text-align: center;
+            margin-top: 2rem;
+            padding: 1.5rem;
+            color: #636e72;
+            font-size: 0.9rem;
+        }
+        
+        /* Animation */
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        @keyframes pulse {
+            0% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+            100% { transform: scale(1); }
+        }
+        
+        .pulse {
+            animation: pulse 1.5s infinite;
+        }
+        
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+        
+        .bounce {
+            animation: bounce 0.5s ease;
+        }
+        
+        /* PWA Install Prompt */
+        .install-prompt {
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: white;
+            border-radius: 15px;
+            padding: 1rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            z-index: 1000;
+            display: none;
+            max-width: 300px;
+            border-left: 5px solid var(--primary-color);
+        }
+        
+        .install-prompt.show {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .game-title {
+                font-size: 2rem;
+            }
+            
+            .game-card {
+                padding: 1.5rem;
+            }
+            
+            .word-item {
+                min-width: 130px;
+                min-height: 90px;
+                padding: 0.8rem;
+            }
+            
+            .word-text {
+                font-size: 1.2rem;
+            }
+            
+            .word-meaning {
+                font-size: 0.8rem;
+            }
+            
+            .drop-zone {
+                padding: 1.5rem;
+            }
+            
+            .stats-container {
+                gap: 0.5rem;
+            }
+            
+            .stat-item {
+                min-width: 100px;
+                padding: 0.8rem;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .app-container {
+                padding: 15px;
+            }
+            
+            .word-container {
+                gap: 10px;
+            }
+            
+            .word-item {
+                min-width: 110px;
+                min-height: 80px;
+                font-size: 1rem;
+            }
+            
+            .word-text {
+                font-size: 1.1rem;
+            }
+            
+            .btn-game {
+                padding: 0.8rem 1.5rem;
+                font-size: 1rem;
+            }
+            
+            .stat-item {
+                min-width: 90px;
+                padding: 0.7rem;
+            }
+            
+            .stat-value {
+                font-size: 1.5rem;
+            }
+        }
+        
+        /* Screen Styles */
+        .screen {
+            display: none;
+        }
+        
+        .screen.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        /* Correct Order Display */
+        .correct-order {
+            background: rgba(0, 184, 148, 0.1);
+            border-radius: 15px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-left: 5px solid var(--success-color);
+        }
+        
+        .order-title {
+            color: var(--success-color);
+            font-weight: 600;
+            margin-bottom: 1rem;
+            font-size: 1.2rem;
+        }
+        
+        .order-words {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            justify-content: center;
+        }
+        
+        .order-word {
+            background: white;
+            padding: 0.8rem 1.2rem;
+            border-radius: 10px;
+            font-weight: 500;
+            box-shadow: 0 3px 10px rgba(0, 0, 0, 0.1);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 120px;
+        }
+        
+        .order-number {
+            font-size: 0.8rem;
+            color: var(--primary-color);
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+        
+        /* Attempt Counter */
+        .attempt-counter {
+            display: inline-block;
+            padding: 0.3rem 0.8rem;
+            background: var(--warning-color);
+            color: var(--dark-color);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-left: 10px;
+        }
+        
+        .attempt-counter.warning {
+            background: var(--danger-color);
+            color: white;
+        }
+    </style>
+</head>
+<body>
+    <div class="app-container">
+        <!-- Header -->
+        <header class="game-header">
+            <h1 class="game-title">WORD CONTINUUM</h1>
+            <p class="game-subtitle">Order words by their intensity level</p>
+        </header>
+        
+        <!-- Tutorial Screen -->
+        <section id="tutorial-screen" class="screen active">
+            <div class="game-card">
+                <h2 class="card-title">
+                    <i class="fas fa-graduation-cap"></i> How to Play
+                </h2>
+                <p class="mb-4" style="font-size: 1.1rem; color: #555;">
+                    In this game, you'll order words by their intensity from lowest to highest.
+                    Each word has a meaning shown below it. Drag and drop words into the order zone to arrange them correctly.
+                </p>
+                
+                <h3 class="mt-4 mb-3" style="color: var(--primary-color);">Example:</h3>
+                <div class="word-container">
+                    <div class="word-item">
+                        <div class="word-with-meaning">
+                            <div class="word-text"><span class="exclamation">!</span> Amble</div>
+                            <div class="word-meaning">walk at a slow, relaxed pace</div>
+                        </div>
+                    </div>
+                    <div class="word-item">
+                        <div class="word-with-meaning">
+                            <div class="word-text"><span class="exclamation">!</span> Walk</div>
+                            <div class="word-meaning">travel on foot at a moderate speed</div>
+                        </div>
+                    </div>
+                    <div class="word-item">
+                        <div class="word-with-meaning">
+                            <div class="word-text"><span class="exclamation">!</span> Sprint</div>
+                            <div class="word-meaning">move at full speed over a short distance</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <p class="mt-3" style="color: #555; font-size: 1.1rem;">
+                    The correct order from lowest to highest intensity is: <strong>Amble → Walk → Sprint</strong>
+                </p>
+                
+                <div class="d-grid mt-4">
+                    <button id="start-game-btn" class="btn-game">
+                        <i class="fas fa-play-circle"></i> Start Game
+                    </button>
+                </div>
+            </div>
+        </section>
+        
+        <!-- Game Screen -->
+        <section id="game-screen" class="screen">
+            <div class="game-card">
+                <div class="d-flex justify-content-between align-items-center mb-4">
+                    <h2 class="card-title mb-0">
+                        <i class="fas fa-gamepad"></i> Order by Intensity
+                        <span id="attempt-counter" class="attempt-counter">Attempts: <span id="attempts">0</span>/3</span>
+                    </h2>
+                    <div class="score-container" style="padding: 0.8rem 1.5rem;">
+                        <div style="font-size: 0.9rem; color: #636e72;">Score</div>
+                        <div class="score-value" id="score">0</div>
+                    </div>
+                </div>
+                
+                <!-- Stats -->
+                <div class="stats-container">
+                    <div class="stat-item">
+                        <div class="stat-value" id="round">1</div>
+                        <div class="stat-label">Round</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="words-count">3</div>
+                        <div class="stat-label">Words</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="streak">0</div>
+                        <div class="stat-label">Streak</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="correct-answers">0</div>
+                        <div class="stat-label">Correct</div>
+                    </div>
+                </div>
+                
+                <div class="mb-4">
+                    <p style="font-size: 1.1rem; color: #555;">
+                        <i class="fas fa-info-circle text-primary"></i>
+                        <strong>Challenge:</strong> Arrange these words from <span class="text-success">lowest</span> to <span class="text-danger">highest</span> intensity.
+                    </p>
+                </div>
+                
+                <!-- Words to Order -->
+                <div class="word-container" id="word-pool">
+                    <!-- Words will be dynamically added here -->
+                </div>
+                
+                <!-- Drop Zone -->
+                <div class="drop-zone empty" id="drop-zone">
+                    <!-- Ordered words will appear here -->
+                </div>
+                
+                <!-- Correct Order Display (Shown after 3 failed attempts) -->
+                <div id="correct-order-display" class="correct-order hidden">
+                    <div class="order-title">
+                        <i class="fas fa-lightbulb"></i> Correct Order (Lowest to Highest):
+                    </div>
+                    <div class="order-words" id="correct-order-words">
+                        <!-- Correct order will be shown here -->
+                    </div>
+                </div>
+                
+                <!-- Feedback -->
+                <div class="feedback hidden" id="feedback"></div>
+                
+                <!-- Game Controls -->
+                <div class="d-flex flex-wrap gap-3 justify-content-center">
+                    <button id="check-answer-btn" class="btn-game btn-game-success">
+                        <i class="fas fa-check-circle"></i> Check Order
+                    </button>
+                    <button id="reset-game-btn" class="btn-game btn-game-secondary">
+                        <i class="fas fa-redo"></i> Reset
+                    </button>
+                    <button id="new-round-btn" class="btn-game" style="display: none;">
+                        <i class="fas fa-forward"></i> Next Round
+                    </button>
+                </div>
+            </div>
+            
+            <!-- Tutorial Button -->
+            <div class="text-center mt-4">
+                <button id="back-to-tutorial" class="btn-game btn-game-secondary" style="padding: 0.7rem 1.5rem;">
+                    <i class="fas fa-question-circle"></i> How to Play
+                </button>
+            </div>
+        </section>
+        
+        <!-- Footer -->
+        <footer class="game-footer">
+            <p>Word Intensity Continuum &copy; 2026 | Made by Olayinka | PWA Ready</p>
+            <p class="mt-2">
+                <i class="fas fa-mobile-alt"></i> This app works offline after installation
+            </p>
+        </footer>
+    </div>
+    
+    <!-- PWA Install Prompt -->
+    <div class="install-prompt" id="install-prompt">
+        <h5><i class="fas fa-download text-primary"></i> Install App</h5>
+        <p class="mb-2">Install this app on your home screen for quick access and offline play.</p>
+        <div class="d-flex gap-2">
+            <button id="install-btn" class="btn-game" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                Install
+            </button>
+            <button id="dismiss-install" class="btn-game btn-game-secondary" style="padding: 0.5rem 1rem; font-size: 0.9rem;">
+                Later
+            </button>
+        </div>
+    </div>
+    
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.bundle.min.js"></script>
+    
+    <script>
+        // Game Data - 1000 different challenges (simplified to 100 for this example)
+        const wordChallenges = [
+            // Speed/Movement
+            { words: [
+                { word: "Creep", meaning: "move slowly and carefully", intensity: 10 },
+                { word: "Amble", meaning: "walk at a slow, relaxed pace", intensity: 25 },
+                { word: "Sprint", meaning: "run at full speed over a short distance", intensity: 90 }
+            ]},
+            { words: [
+                { word: "Stroll", meaning: "walk in a leisurely way", intensity: 20 },
+                { word: "Jog", meaning: "run at a steady, gentle pace", intensity: 50 },
+                { word: "Dash", meaning: "run or travel quickly", intensity: 80 }
+            ]},
+            { words: [
+                { word: "Crawl", meaning: "move slowly on hands and knees", intensity: 5 },
+                { word: "Walk", meaning: "move at a regular pace", intensity: 40 },
+                { word: "Race", meaning: "compete in speed", intensity: 85 }
+            ]},
+            // Temperature
+            { words: [
+                { word: "Freezing", meaning: "extremely cold", intensity: 5 },
+                { word: "Cold", meaning: "of low temperature", intensity: 25 },
+                { word: "Boiling", meaning: "heated to the point of bubbling", intensity: 95 }
+            ]},
+            { words: [
+                { word: "Chilly", meaning: "uncomfortably cool", intensity: 20 },
+                { word: "Warm", meaning: "moderately hot", intensity: 45 },
+                { word: "Scorching", meaning: "extremely hot", intensity: 90 }
+            ]},
+            // Size
+            { words: [
+                { word: "Tiny", meaning: "very small", intensity: 10 },
+                { word: "Large", meaning: "of considerable size", intensity: 60 },
+                { word: "Gigantic", meaning: "of very great size", intensity: 95 }
+            ]},
+            // Sound
+            { words: [
+                { word: "Whisper", meaning: "speak very softly", intensity: 15 },
+                { word: "Speak", meaning: "say something", intensity: 40 },
+                { word: "Shout", meaning: "utter a loud cry", intensity: 75 }
+            ]},
+            // Emotion - Happiness
+            { words: [
+                { word: "Content", meaning: "in a state of peaceful happiness", intensity: 30 },
+                { word: "Happy", meaning: "feeling pleasure", intensity: 50 },
+                { word: "Ecstatic", meaning: "overwhelmingly joyful", intensity: 95 }
+            ]},
+            // Emotion - Anger
+            { words: [
+                { word: "Annoyed", meaning: "slightly angry", intensity: 30 },
+                { word: "Angry", meaning: "feeling strong annoyance", intensity: 65 },
+                { word: "Furious", meaning: "extremely angry", intensity: 90 }
+            ]},
+            // Light
+            { words: [
+                { word: "Dim", meaning: "poorly lit", intensity: 15 },
+                { word: "Bright", meaning: "giving out much light", intensity: 60 },
+                { word: "Blinding", meaning: "extremely bright", intensity: 95 }
+            ]},
+            // Difficulty
+            { words: [
+                { word: "Easy", meaning: "achieved without effort", intensity: 15 },
+                { word: "Challenging", meaning: "testing one's abilities", intensity: 50 },
+                { word: "Impossible", meaning: "not able to occur", intensity: 100 }
+            ]},
+            // Rain
+            { words: [
+                { word: "Drizzle", meaning: "light rain", intensity: 20 },
+                { word: "Rain", meaning: "water falling in drops", intensity: 50 },
+                { word: "Downpour", meaning: "heavy rain", intensity: 85 }
+            ]},
+            // Wind
+            { words: [
+                { word: "Breeze", meaning: "gentle wind", intensity: 20 },
+                { word: "Wind", meaning: "moving air", intensity: 50 },
+                { word: "Hurricane", meaning: "violent storm with strong winds", intensity: 95 }
+            ]},
+            // Sleep
+            { words: [
+                { word: "Drowsy", meaning: "sleepy and lethargic", intensity: 25 },
+                { word: "Sleepy", meaning: "needing sleep", intensity: 50 },
+                { word: "Exhausted", meaning: "extremely tired", intensity: 90 }
+            ]},
+            // Hunger
+            { words: [
+                { word: "Peckish", meaning: "slightly hungry", intensity: 25 },
+                { word: "Hungry", meaning: "feeling need for food", intensity: 55 },
+                { word: "Starving", meaning: "extremely hungry", intensity: 90 }
+            ]},
+            // Pain
+            { words: [
+                { word: "Ache", meaning: "continuous dull pain", intensity: 30 },
+                { word: "Pain", meaning: "physical suffering", intensity: 65 },
+                { word: "Agony", meaning: "extreme physical or mental suffering", intensity: 95 }
+            ]},
+            // Cleanliness
+            { words: [
+                { word: "Dusty", meaning: "covered with dust", intensity: 20 },
+                { word: "Dirty", meaning: "not clean", intensity: 50 },
+                { word: "Filthy", meaning: "disgustingly dirty", intensity: 90 }
+            ]},
+            // Fullness
+            { words: [
+                { word: "Satisfied", meaning: "contented with enough", intensity: 40 },
+                { word: "Full", meaning: "containing all possible", intensity: 70 },
+                { word: "Stuffed", meaning: "filled to capacity", intensity: 95 }
+            ]},
+            // Age
+            { words: [
+                { word: "Young", meaning: "having lived for a short time", intensity: 20 },
+                { word: "Middle-aged", meaning: "of middle age", intensity: 50 },
+                { word: "Ancient", meaning: "belonging to the distant past", intensity: 95 }
+            ]},
+            // Value
+            { words: [
+                { word: "Inexpensive", meaning: "low in price", intensity: 15 },
+                { word: "Expensive", meaning: "costing a lot", intensity: 60 },
+                { word: "Priceless", meaning: "so valuable that price cannot be determined", intensity: 100 }
+            ]},
+            // Fear
+            { words: [
+                { word: "Nervous", meaning: "easily agitated", intensity: 30 },
+                { word: "Scared", meaning: "fearful, frightened", intensity: 65 },
+                { word: "Terrified", meaning: "extremely frightened", intensity: 95 }
+            ]},
+            // Surprise
+            { words: [
+                { word: "Surprised", meaning: "feeling mild astonishment", intensity: 40 },
+                { word: "Shocked", meaning: "affected with sudden surprise", intensity: 75 },
+                { word: "Astonished", meaning: "greatly surprised", intensity: 95 }
+            ]},
+            // Taste - Sweet
+            { words: [
+                { word: "Subtly sweet", meaning: "slightly sweet", intensity: 25 },
+                { word: "Sweet", meaning: "having the taste of sugar", intensity: 50 },
+                { word: "Cloying", meaning: "excessively sweet", intensity: 85 }
+            ]},
+            // Taste - Spicy
+            { words: [
+                { word: "Mild", meaning: "not strong or hot", intensity: 20 },
+                { word: "Spicy", meaning: "flavored with spice", intensity: 60 },
+                { word: "Fiery", meaning: "extremely spicy", intensity: 95 }
+            ]},
+            // Smell
+            { words: [
+                { word: "Faint", meaning: "barely perceptible", intensity: 15 },
+                { word: "Strong", meaning: "powerful smell", intensity: 65 },
+                { word: "Overpowering", meaning: "extremely strong", intensity: 95 }
+            ]}
+        ];
+
+        // Generate more challenges by combining and modifying existing ones
+        function generateMoreChallenges() {
+            const additionalChallenges = [];
+            
+            // Generate 4-word challenges
+            const fourWordTemplates = [
+                // Movement
+                [
+                    { word: "Crawl", meaning: "move slowly on hands and knees", intensity: 5 },
+                    { word: "Walk", meaning: "move at a regular pace", intensity: 40 },
+                    { word: "Run", meaning: "move at speed faster than walking", intensity: 70 },
+                    { word: "Sprint", meaning: "run at full speed", intensity: 95 }
+                ],
+                // Temperature
+                [
+                    { word: "Freezing", meaning: "extremely cold", intensity: 5 },
+                    { word: "Cold", meaning: "low temperature", intensity: 25 },
+                    { word: "Hot", meaning: "high temperature", intensity: 75 },
+                    { word: "Scorching", meaning: "extremely hot", intensity: 95 }
+                ],
+                // Emotion
+                [
+                    { word: "Sad", meaning: "feeling sorrow", intensity: 30 },
+                    { word: "Neutral", meaning: "neither positive nor negative", intensity: 50 },
+                    { word: "Happy", meaning: "feeling pleasure", intensity: 70 },
+                    { word: "Ecstatic", meaning: "overwhelmingly joyful", intensity: 95 }
+                ],
+                // Size
+                [
+                    { word: "Microscopic", meaning: "too small to be seen", intensity: 5 },
+                    { word: "Small", meaning: "of limited size", intensity: 30 },
+                    { word: "Large", meaning: "considerable size", intensity: 65 },
+                    { word: "Massive", meaning: "exceptionally large", intensity: 95 }
+                ],
+                // Sound
+                [
+                    { word: "Silent", meaning: "complete absence of sound", intensity: 0 },
+                    { word: "Quiet", meaning: "making little noise", intensity: 25 },
+                    { word: "Loud", meaning: "producing much noise", intensity: 65 },
+                    { word: "Deafening", meaning: "extremely loud", intensity: 95 }
+                ]
+            ];
+            
+            fourWordTemplates.forEach(template => {
+                additionalChallenges.push({ words: template });
+            });
+            
+            return additionalChallenges;
+        }
+
+        // Combine all challenges
+        const allChallenges = [...wordChallenges, ...generateMoreChallenges()];
+        
+        // Game State
+        let currentChallenge = [];
+        let score = 0;
+        let currentRound = 1;
+        let totalRounds = 20;
+        let draggedWord = null;
+        let attempts = 0;
+        let maxAttempts = 3;
+        let correctStreak = 0;
+        let totalCorrect = 0;
+        let wordsPerChallenge = 3;
+        
+        // DOM Elements
+        const tutorialScreen = document.getElementById('tutorial-screen');
+        const gameScreen = document.getElementById('game-screen');
+        const startGameBtn = document.getElementById('start-game-btn');
+        const backToTutorialBtn = document.getElementById('back-to-tutorial');
+        const wordPool = document.getElementById('word-pool');
+        const dropZone = document.getElementById('drop-zone');
+        const checkAnswerBtn = document.getElementById('check-answer-btn');
+        const resetGameBtn = document.getElementById('reset-game-btn');
+        const newRoundBtn = document.getElementById('new-round-btn');
+        const scoreElement = document.getElementById('score');
+        const feedbackElement = document.getElementById('feedback');
+        const roundElement = document.getElementById('round');
+        const wordsCountElement = document.getElementById('words-count');
+        const streakElement = document.getElementById('streak');
+        const correctAnswersElement = document.getElementById('correct-answers');
+        const attemptsElement = document.getElementById('attempts');
+        const attemptCounter = document.getElementById('attempt-counter');
+        const correctOrderDisplay = document.getElementById('correct-order-display');
+        const correctOrderWords = document.getElementById('correct-order-words');
+        const installPrompt = document.getElementById('install-prompt');
+        const installBtn = document.getElementById('install-btn');
+        const dismissInstallBtn = document.getElementById('dismiss-install');
+        
+        // Initialize the game
+        function initGame() {
+            score = 0;
+            currentRound = 1;
+            attempts = 0;
+            correctStreak = 0;
+            totalCorrect = 0;
+            wordsPerChallenge = 3;
+            updateStats();
+            showTutorial();
+        }
+        
+        // Show tutorial screen
+        function showTutorial() {
+            tutorialScreen.classList.add('active');
+            gameScreen.classList.remove('active');
+        }
+        
+        // Start a new game
+        function startGame() {
+            tutorialScreen.classList.remove('active');
+            gameScreen.classList.add('active');
+            newRound();
+        }
+        
+        // Start a new round
+        function newRound() {
+            if (currentRound > totalRounds) {
+                endGame();
+                return;
+            }
+            
+            // Reset attempts
+            attempts = 0;
+            updateAttemptCounter();
+            
+            // Hide correct order display
+            correctOrderDisplay.classList.add('hidden');
+            
+            // Select a random challenge with the right number of words
+            const suitableChallenges = allChallenges.filter(ch => ch.words.length === wordsPerChallenge);
+            const randomChallenge = suitableChallenges[Math.floor(Math.random() * suitableChallenges.length)];
+            currentChallenge = [...randomChallenge.words];
+            
+            // Shuffle the words
+            shuffleArray(currentChallenge);
+            
+            // Clear the word pool and drop zone
+            wordPool.innerHTML = '';
+            dropZone.innerHTML = '';
+            dropZone.classList.add('empty');
+            
+            // Hide feedback and new round button
+            feedbackElement.classList.add('hidden');
+            newRoundBtn.style.display = 'none';
+            checkAnswerBtn.style.display = 'flex';
+            
+            // Create word elements for the pool
+            currentChallenge.forEach(wordObj => {
+                const wordElement = document.createElement('div');
+                wordElement.className = 'word-item';
+                wordElement.dataset.word = wordObj.word;
+                wordElement.dataset.meaning = wordObj.meaning;
+                wordElement.dataset.intensity = wordObj.intensity;
+                
+                const wordContent = document.createElement('div');
+                wordContent.className = 'word-with-meaning';
+                wordContent.innerHTML = `
+                    <div class="word-text"><span class="exclamation">!</span> ${wordObj.word}</div>
+                    <div class="word-meaning">${wordObj.meaning}</div>
+                `;
+                
+                wordElement.appendChild(wordContent);
+                wordElement.draggable = true;
+                
+                // Add drag events
+                wordElement.addEventListener('dragstart', handleDragStart);
+                wordElement.addEventListener('dragend', handleDragEnd);
+                
+                wordPool.appendChild(wordElement);
+            });
+            
+            // Update round indicator
+            roundElement.textContent = currentRound;
+            wordsCountElement.textContent = wordsPerChallenge;
+        }
+        
+        // Handle drag start
+        function handleDragStart(e) {
+            draggedWord = this;
+            this.classList.add('dragging');
+            e.dataTransfer.setData('text/plain', this.dataset.word);
+            
+            // Add visual feedback to drop zone
+            dropZone.classList.add('active');
+        }
+        
+        // Handle drag end
+        function handleDragEnd() {
+            this.classList.remove('dragging');
+            draggedWord = null;
+            dropZone.classList.remove('active');
+        }
+        
+        // Set up drop zone
+        dropZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            this.classList.add('active');
+        });
+        
+        dropZone.addEventListener('dragleave', function() {
+            this.classList.remove('active');
+        });
+        
+        dropZone.addEventListener('drop', function(e) {
+            e.preventDefault();
+            this.classList.remove('active');
+            
+            if (draggedWord) {
+                // Remove from word pool if it's there
+                if (draggedWord.parentElement === wordPool) {
+                    wordPool.removeChild(draggedWord);
+                }
+                
+                // Add to drop zone
+                this.appendChild(draggedWord);
+                this.classList.remove('empty');
+                
+                // Make word in drop zone draggable too
+                draggedWord.addEventListener('dragstart', handleDragStart);
+                draggedWord.addEventListener('dragend', handleDragEnd);
+                
+                // Allow reordering within drop zone
+                const wordsInDropZone = Array.from(this.children);
+                wordsInDropZone.forEach((word, index) => {
+                    word.style.order = index;
+                });
+            }
+        });
+        
+        // Allow reordering in drop zone
+        dropZone.addEventListener('dragover', function(e) {
+            e.preventDefault();
+            const afterElement = getDragAfterElement(this, e.clientX);
+            const draggable = document.querySelector('.dragging');
+            
+            if (afterElement == null) {
+                this.appendChild(draggable);
+            } else {
+                this.insertBefore(draggable, afterElement);
+            }
+        });
+        
+        // Helper function for drag and drop positioning
+        function getDragAfterElement(container, x) {
+            const draggableElements = [...container.querySelectorAll('.word-item:not(.dragging)')];
+            
+            return draggableElements.reduce((closest, child) => {
+                const box = child.getBoundingClientRect();
+                const offset = x - box.left - box.width / 2;
+                
+                if (offset < 0 && offset > closest.offset) {
+                    return { offset: offset, element: child };
+                } else {
+                    return closest;
+                }
+            }, { offset: Number.NEGATIVE_INFINITY }).element;
+        }
+        
+        // Check the answer
+        function checkAnswer() {
+            const wordsInDropZone = Array.from(dropZone.children);
+            
+            if (wordsInDropZone.length < currentChallenge.length) {
+                showFeedback('Please place all words in the order area!', 'error');
+                return;
+            }
+            
+            attempts++;
+            updateAttemptCounter();
+            
+            // Check if words are in correct order (low to high intensity)
+            let isCorrect = true;
+            let incorrectIndices = [];
+            
+            for (let i = 0; i < wordsInDropZone.length - 1; i++) {
+                const currentIntensity = parseInt(wordsInDropZone[i].dataset.intensity);
+                const nextIntensity = parseInt(wordsInDropZone[i + 1].dataset.intensity);
+                
+                if (currentIntensity > nextIntensity) {
+                    isCorrect = false;
+                    incorrectIndices.push(i);
+                }
+            }
+            
+            if (isCorrect) {
+                // Calculate points (10 per word + bonus for streak)
+                const points = (10 * wordsPerChallenge) + (correctStreak * 2);
+                score += points;
+                correctStreak++;
+                totalCorrect++;
+                
+                // Adjust word count based on streak
+                if (correctStreak >= 5 && wordsPerChallenge < 6) {
+                    wordsPerChallenge++;
+                    correctStreak = 0;
+                    showFeedback(`Excellent! You've unlocked ${wordsPerChallenge}-word challenges!`, 'success');
+                }
+                
+                updateStats();
+                showFeedback(`Perfect! Correct order! +${points} points`, 'success');
+                
+                // Highlight correct order with animation
+                wordsInDropZone.forEach(word => {
+                    word.style.backgroundColor = 'rgba(0, 184, 148, 0.2)';
+                    word.style.borderColor = 'var(--success-color)';
+                    word.style.color = '#007a63';
+                });
+                
+                // Show next round button
+                checkAnswerBtn.style.display = 'none';
+                newRoundBtn.style.display = 'flex';
+                
+                // Move to next round after delay
+                setTimeout(() => {
+                    if (currentRound < totalRounds) {
+                        currentRound++;
+                        newRound();
+                    }
+                }, 2000);
+                
+            } else {
+                // Wrong answer
+                correctStreak = 0;
+                
+                // Reduce word count if streak is broken and we're above 3
+                if (wordsPerChallenge > 3) {
+                    wordsPerChallenge--;
+                    showFeedback(`Challenge reduced to ${wordsPerChallenge} words. Try again!`, 'error');
+                } else {
+                    showFeedback('Not quite right. Try again!', 'error');
+                }
+                
+                // Highlight incorrect words
+                wordsInDropZone.forEach((word, i) => {
+                    if (incorrectIndices.includes(i) || incorrectIndices.includes(i-1)) {
+                        word.style.backgroundColor = 'rgba(225, 112, 85, 0.2)';
+                        word.style.borderColor = 'var(--danger-color)';
+                        word.style.color = '#c4553a';
+                    }
+                });
+                
+                updateStats();
+                
+                // After 3 failed attempts, show correct order
+                if (attempts >= maxAttempts) {
+                    showCorrectOrder();
+                    setTimeout(() => {
+                        currentRound++;
+                        newRound();
+                    }, 3000);
+                }
+            }
+        }
+        
+        // Show correct order
+        function showCorrectOrder() {
+            // Sort challenge by intensity
+            const sortedChallenge = [...currentChallenge].sort((a, b) => a.intensity - b.intensity);
+            
+            // Display correct order
+            correctOrderWords.innerHTML = '';
+            sortedChallenge.forEach((wordObj, index) => {
+                const orderWord = document.createElement('div');
+                orderWord.className = 'order-word';
+                orderWord.innerHTML = `
+                    <div class="order-number">${index + 1}</div>
+                    <div><strong>${wordObj.word}</strong></div>
+                    <div style="font-size: 0.8rem; color: #636e72; margin-top: 5px;">${wordObj.meaning}</div>
+                `;
+                correctOrderWords.appendChild(orderWord);
+            });
+            
+            correctOrderDisplay.classList.remove('hidden');
+            showFeedback(`The correct order is shown above. Moving to next round...`, 'error');
+        }
+        
+        // Reset the current round
+        function resetRound() {
+            // Move all words back to pool
+            const wordsInDropZone = Array.from(dropZone.children);
+            wordsInDropZone.forEach(word => {
+                word.style.backgroundColor = '';
+                word.style.borderColor = '';
+                word.style.color = '';
+                wordPool.appendChild(word);
+            });
+            
+            dropZone.classList.add('empty');
+            feedbackElement.classList.add('hidden');
+            
+            // Shuffle words in pool
+            shuffleDOMChildren(wordPool);
+        }
+        
+        // Go to next round
+        function nextRound() {
+            currentRound++;
+            newRound();
+        }
+        
+        // End the game
+        function endGame() {
+            feedbackElement.innerHTML = `
+                <div class="feedback success">
+                    <h4><i class="fas fa-trophy text-warning"></i> Game Complete!</h4>
+                    <p>Your final score: <strong>${score}</strong> points</p>
+                    <p>You answered ${totalCorrect} out of ${totalRounds} rounds correctly!</p>
+                    <p>Maximum words per challenge reached: <strong>${wordsPerChallenge}</strong></p>
+                    <div class="mt-3">
+                        <button id="play-again-btn" class="btn-game btn-game-success">
+                            <i class="fas fa-redo"></i> Play Again
+                        </button>
+                    </div>
+                </div>
+            `;
+            
+            // Add event listener to play again button
+            setTimeout(() => {
+                document.getElementById('play-again-btn').addEventListener('click', () => {
+                    initGame();
+                    startGame();
+                });
+            }, 100);
+        }
+        
+        // Show feedback message
+        function showFeedback(message, type) {
+            feedbackElement.textContent = message;
+            feedbackElement.className = `feedback ${type}`;
+            feedbackElement.classList.remove('hidden');
+        }
+        
+        // Update all stats
+        function updateStats() {
+            scoreElement.textContent = score;
+            roundElement.textContent = currentRound;
+            wordsCountElement.textContent = wordsPerChallenge;
+            streakElement.textContent = correctStreak;
+            correctAnswersElement.textContent = totalCorrect;
+            
+            // Animate score update
+            scoreElement.classList.add('bounce');
+            setTimeout(() => {
+                scoreElement.classList.remove('bounce');
+            }, 500);
+        }
+        
+        // Update attempt counter
+        function updateAttemptCounter() {
+            attemptsElement.textContent = attempts;
+            
+            // Change color based on attempts
+            if (attempts >= maxAttempts - 1) {
+                attemptCounter.classList.add('warning');
+            } else {
+                attemptCounter.classList.remove('warning');
+            }
+        }
+        
+        // Utility function to shuffle array
+        function shuffleArray(array) {
+            for (let i = array.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [array[i], array[j]] = [array[j], array[i]];
+            }
+            return array;
+        }
+        
+        // Utility function to shuffle DOM children
+        function shuffleDOMChildren(parent) {
+            const children = Array.from(parent.children);
+            shuffleArray(children);
+            children.forEach(child => parent.appendChild(child));
+        }
+        
+        // Event Listeners
+        startGameBtn.addEventListener('click', startGame);
+        backToTutorialBtn.addEventListener('click', showTutorial);
+        checkAnswerBtn.addEventListener('click', checkAnswer);
+        resetGameBtn.addEventListener('click', resetRound);
+        newRoundBtn.addEventListener('click', nextRound);
+        
+        // PWA Functionality
+        let deferredPrompt;
+        
+        // Create manifest dynamically
+        function createManifest() {
+            const manifest = {
+                "name": "Word Intensity Continuum",
+                "short_name": "WordContinuum",
+                "description": "Order words by their intensity in this fun game",
+                "start_url": "./",
+                "display": "standalone",
+                "background_color": "#f5f7fa",
+                "theme_color": "#6c5ce7",
+                "icons": [
+                    {
+                        "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIj48cGF0aCBmaWxsPSIjNmM1Y2U3IiBkPSJNMjU2IDhDMTE5IDggOCAxMTkgOCAyNTZzMTExIDI0OCAyNDggMjQ4IDI0OC0xMTEgMjQ4LTI0OFMzOTMgOCAyNTYgOHptMTQzLjYgMjk2LjljNS45IDExLjQgMTEuMSAyMi45IDEzLjYgMzQuNkgxNzQuOGMyLjUtMTEuNiA3LjctMjMuMiAxMy42LTM0LjYgLjUtMS4xIDEuMS0yLjIgMS43LTMuMyAxNzMtNjMuNSA5MC4zLTEyMS41IDkwLjMtMTIxLjUgMTU4LjQgMjYuNSAxNzAuNyA3OC41IDE3MC43IDc4LjUtMS4yIDUuMy0yLjQgMTAuNy0zLjUgMTYuMS00LjMtMTUuMy0xNi42LTMwLjMtMzQuNC00My4zLTQ3LjYgMTcuMy0xNS45IDI3LjgtMjcuOSAyNy44LTI3LjktMzYuNy0xMjUuMi0xMDYuMi0xMjUuMi0xMDYuMnMtMjguMSA2Ni4zLTcyLjcgODYuMWMxLjItMS4zIDIuNS0yLjYgMy44LTMuOCA4LjktOC45IDIwLTExLjEgMjkuOC01LjMgMTUuMSA5LjIgMzIuOCAyMy40IDQ1LjYgNDEuNSA0LjEgNi44IDcuMyAxMy44IDkuNiAyMC45IDIgNS40IDMuMSA5LjkgMy42IDE0LjVoODkuMWMuNS00LjYgMS42LTkuMSAzLjYtMTQuNSAyLjQtNy4yIDUuNS0xNC4yIDkuNi0yMC45IDEyLjgtMTguMSAzMC41LTMyLjMgNDUuNi00MS41IDkuOC01LjggMjAuOS0zLjYgMjkuOCA1LjMgMS4zIDEuMyAyLjUgMi41IDMuOCAzLjgtNDQuNi0xOS44LTcyLjctODYuMS03Mi43LTg2LjFzMCAwIDI3LjggMjcuOWMxMC4xIDExLjQgMzAuOCAzMS44IDQ1LjYgNDEuNS0xNy44IDE3LjMtMzAuMSAzMi4zLTM0LjQgNDcuNnptLTEzMCA2My41Yy0xNy45LTI5LjEtMzMuNS02MC43LTM1LjQtNzQuNCAzMC4zIDExLjMgNjAuNSAzMC43IDkzIDU5LjFoLTU3LjZ6bTkyLjQtNjEuNWM1LjcgMTcuNiAxNS4zIDQyLjYgMzEuNSA2OC4xaC02My41YzQ3LjYtNzkuMyAxMTkuMS0xMTguOSAxMTkuMS0xMTguOS0xOC4xIDI3LjItNDMuMiA1MC44LTg3LjEgNTAuOHoiLz48L3N2Zz4=",
+                        "sizes": "512x512",
+                        "type": "image/svg+xml"
+                    }
+                ]
+            };
+            
+            const manifestJson = JSON.stringify(manifest);
+            const manifestBase64 = btoa(manifestJson);
+            const manifestUrl = `data:application/manifest+json;base64,${manifestBase64}`;
+            
+            document.getElementById('manifest').href = manifestUrl;
+        }
+        
+        // Show install prompt
+        window.addEventListener('beforeinstallprompt', (e) => {
+            e.preventDefault();
+            deferredPrompt = e;
+            
+            setTimeout(() => {
+                if (deferredPrompt) {
+                    installPrompt.classList.add('show');
+                }
+            }, 5000);
+        });
+        
+        // Install button click handler
+        installBtn.addEventListener('click', async () => {
+            if (deferredPrompt) {
+                deferredPrompt.prompt();
+                const { outcome } = await deferredPrompt.userChoice;
+                
+                if (outcome === 'accepted') {
+                    console.log('User accepted the install prompt');
+                }
+                
+                deferredPrompt = null;
+                installPrompt.classList.remove('show');
+            }
+        });
+        
+        // Dismiss install prompt
+        dismissInstallBtn.addEventListener('click', () => {
+            installPrompt.classList.remove('show');
+        });
+        
+        // Check if app is running in standalone mode
+        function isRunningStandalone() {
+            return window.matchMedia('(display-mode: standalone)').matches || 
+                   window.navigator.standalone === true;
+        }
+        
+        // Register service worker for PWA
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('data:application/javascript;base64,' + btoa(`
+                    self.addEventListener('install', (event) => {
+                        console.log('Service Worker installing');
+                    });
+                    
+                    self.addEventListener('activate', (event) => {
+                        console.log('Service Worker activating');
+                    });
+                    
+                    self.addEventListener('fetch', (event) => {
+                        // Cache-first strategy
+                        event.respondWith(
+                            caches.match(event.request).then(response => {
+                                return response || fetch(event.request);
+                            })
+                        );
+                    });
+                `)).then(registration => {
+                    console.log('ServiceWorker registered with scope:', registration.scope);
+                }).catch(error => {
+                    console.log('ServiceWorker registration failed:', error);
+                });
+            });
+        }
+        
+        // Initialize the game
+        document.addEventListener('DOMContentLoaded', () => {
+            createManifest();
+            initGame();
+            
+            if (isRunningStandalone()) {
+                console.log('App is running in standalone mode');
+            }
+        });
+        
+        // Prevent drag and drop default behavior for entire document
+        document.addEventListener('dragover', function(e) {
+            e.preventDefault();
+        });
+        
+        document.addEventListener('drop', function(e) {
+            e.preventDefault();
+        });
+    </script>
+</body>
+</html>
